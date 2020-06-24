@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../npm_packages"
 		}
 	],
 	"settings": {}

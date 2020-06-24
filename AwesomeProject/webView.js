@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, AppState } from 'react-native';
+import { StyleSheet, AppState } from 'react-native';
 import { WebView } from 'react-native-webview';
-import ReactNativeComponentTree from 'react-native';
 
 // ...
 export default class MyWebComponent extends Component {
@@ -16,14 +15,17 @@ export default class MyWebComponent extends Component {
     handleClick(e) {
         try {
             // click names
-            // console.log(e._targetInst.child.memoizedProps)
-            // console.log(ReactNativeComponentTree.getInstanceFromNode(e.currentTarget));
+            console.log(e._targetInst.child.memoizedProps)
             console.log(e)
-            
+            // TODO: handle click_event here
         } catch (error) {
             console.log("catch");
             console.log(error)
         }
+    }
+
+    handlePageChange(e) {
+        // TODO: handle page_close and page_open
     }
 
     render() {
@@ -57,9 +59,29 @@ export default class MyWebComponent extends Component {
         textZoom={100} />;
     }
 
-    setEvent(name) {
-        console.log("got to setevent")
-        this.webref.injectJavaScript(`fibo.setEvent("${name}")`);
+    set(name, obj) {
+        console.log("got to set", name, obj);
+        if (!name)
+            return "not recogonized";
+        switch(name) {
+            case "userInfo":
+                // TODO: Set this in fibotalkSettings of webview
+                break;
+            case "login":
+                // TODO: call fibo.login
+                break;
+            case "signup":
+                // TODO: call fibo.signup
+                break;
+            case "click_event":
+                this.handleClick(e);
+                break;
+            case "page_open":
+                this.handlePageChange(e);
+                break;
+
+        }
+        // this.webref.injectJavaScript(`fibo.setEvent("${name}")`);
     }
 }
 
