@@ -3,39 +3,46 @@ import { StyleSheet, AppState } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 // ...
-export default class MyWebComponent extends Component {
+export default class Fiboview extends Component {
     componentDidMount() {
         // window.addEventListener("click", this.handleClick, false)
         AppState.addEventListener("change", function (params) {
             console.log(AppState.currentState); // (active/background) for page changes
             // (inactive) for ios
+            // TODO: handle page_open, page_close here
         });
     }
 
     handleClick(e) {
+        let misc = {};
         try {
             // click names
-            console.log(e._targetInst.child.memoizedProps)
-            console.log(e)
+            console.log(e._targetInst.child.memoizedProps);
+            misc.text = e._targetInst.child.memoizedProps || "";
             // TODO: handle click_event here
         } catch (error) {
-            console.log("catch");
-            console.log(error)
         }
+        this.webref.injectJavaScript(`fibo.setEvent("click_event", "${misc.text}", { misc: ${misc} })`);
     }
 
     handlePageChange(e) {
+        console.log(e);
         // TODO: handle page_close and page_open
     }
 
     render() {
         console.log(this.props);
+        let url = 'http://unireply.com/andy.html?appid=' + this.props.appid;
+        let uiFunc = `window.fibotalkSettings=${JSON.stringify(this.props.userInfo)}`;
+
         return <WebView
         ref={(r) => {this.webref = r}}
         originWhitelist={['*']}
-        url={{ uri: 'http://unireply.com/andy.html' }}
-        source={{ uri: 'http://unireply.com/andy.html' }}
+        url={{ uri: url }}
+        source={{ uri: url }}
         style={styles.visible}
+        injectedJavaScriptBeforeContentLoaded={uiFunc}
+        injectedJavaScript={uiFunc}
         onError={syntheticEvent => {
             const { nativeEvent } = syntheticEvent;
             console.warn('WebView error: ', nativeEvent);
@@ -59,19 +66,19 @@ export default class MyWebComponent extends Component {
         textZoom={100} />;
     }
 
-    set(name, obj) {
-        console.log("got to set", name, obj);
+    set(name, val, obj) {
+        console.log("got to set", name, val);
         if (!name)
             return "not recogonized";
         switch(name) {
             case "userInfo":
-                // TODO: Set this in fibotalkSettings of webview
+                this.webref.injectJavaScript(`fibo.setUserInfo(${val})`);
                 break;
             case "login":
-                // TODO: call fibo.login
+                this.webref.injectJavaScript(`fibo.login(${val})`);
                 break;
             case "signup":
-                // TODO: call fibo.signup
+                this.webref.injectJavaScript(`fibo.signup(${val})`);
                 break;
             case "click_event":
                 this.handleClick(e);
@@ -79,9 +86,17 @@ export default class MyWebComponent extends Component {
             case "page_open":
                 this.handlePageChange(e);
                 break;
-
+            case "open":
+                this.webref.injectJavaScript(`fibo.open({name: "messenger", type: "open"})`);
+                this.webref.style = styles.visible;
+                break;
+            case "close":
+                this.webref.injectJavaScript(`fibo.open({name: "messenger", type: "close"})`);
+                this.webref.style = styles.hidden;
+                break;
+            default:
+                this.webref.injectJavaScript(`fibo.setEvent("${name}", "${val}", ${obj})`);
         }
-        // this.webref.injectJavaScript(`fibo.setEvent("${name}")`);
     }
 }
 
