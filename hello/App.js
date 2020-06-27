@@ -27,13 +27,14 @@ import {
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Fiboview from "./web"
 
 const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
   return (
     <>
-      <NavigationContainer onStateChange={(e)=>console.log(e)}>
+      <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
@@ -43,11 +44,13 @@ const App: () => React$Node = () => {
         <Stack.Screen name="Details" component={DetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    <Fiboview />
     </>
   );
 };
 
 function HomeScreen({ navigation }) {
+  navigation.addListener("state", (e)=>{console.log(e)});
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Home Screen</Text>
@@ -60,6 +63,7 @@ function HomeScreen({ navigation }) {
 }
 
 function DetailsScreen({ navigation }) {
+  navigation.addListener("state", (e)=>{console.log(e)});
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Details Screen</Text>
