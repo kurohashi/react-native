@@ -34,7 +34,8 @@ const Stack = createStackNavigator();
 const App: () => React$Node = () => {
   let fibo = {};
   let click = (e) => {
-    fibo.set("click_event", e);
+    // fibo.set("click_event", e);
+    // fibo.set("login");
   };
   let page = (e) => {
     fibo.set("page_open", e);
@@ -61,7 +62,7 @@ const App: () => React$Node = () => {
     </NavigationContainer>
     <Fiboview
       appid="b46654bda14d03cfa39562de623c89"
-      userInfo={{userId: "shubham@fibo.com"}}
+      userInfo={{userId: "rahul-apk@fibo.com"}}
       ref={(e)=>{fibo = e}}
     />
     </>
