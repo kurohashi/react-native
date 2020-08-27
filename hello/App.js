@@ -27,34 +27,22 @@ import {
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import {
-  setJSExceptionHandler,
-  setNativeExceptionHandler,
-} from 'react-native-exception-handler';
 import Fiboview from "fibo-react"
-
-setJSExceptionHandler((error, isFatal) => {
-  console.log(error, isFatal);
-  // throw new Error("unhandled exception")
-}, true);
-
-setNativeExceptionHandler((errorString) => {
-  console.log(errorString);
-  // throw new Error("unhandled exception")
-});
 
 const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
   let fibo = {};
   let click = (e) => {
-    // console.log(e, JSON.stringify(e._dispatchInstances.stateNode.viewConfig));
     fibo.set("click_event", e);
+  };
+  let page = (e) => {
+    fibo.set("page_open", e);
   };
   return (
     <>
-    <View onTouchStart={(e)=>{click(e)}}>
-      <Text>Hello world</Text>
+    <View onTouchStart={(e)=>{e.b.c.d = "5";}}>
+      <Text>Crash app</Text>
     </View>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -62,12 +50,12 @@ const App: () => React$Node = () => {
           name="Home"
           component={HomeScreen}
           options={{ title: 'Welcome' }}
-          initialParams={{ setClick: click }}
+          initialParams={{ setClick: click, page: page }}
         />
         <Stack.Screen
           name="Details"
           component={DetailsScreen}
-          initialParams={{ setClick: click }}
+          initialParams={{ setClick: click, page: page }}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -81,7 +69,7 @@ const App: () => React$Node = () => {
 };
 
 function HomeScreen({ navigation, route }) {
-  navigation.addListener("state", (e)=>{});
+  navigation.addListener("focus", (e)=>{route.params.page("home")});
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} onTouchStart={(e)=>route.params.setClick(e)}>
       <Text>Home Screen</Text>
@@ -94,7 +82,7 @@ function HomeScreen({ navigation, route }) {
 }
 
 function DetailsScreen({ navigation, route }) {
-  navigation.addListener("state", (e)=>{});
+  navigation.addListener("focus", (e)=>{route.params.page("details")});
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} onTouchStart={(e)=>route.params.setClick(e)}>
       <Text>Details Screen</Text>
