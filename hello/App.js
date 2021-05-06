@@ -27,32 +27,52 @@ import {
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Fiboview from "./web"
+import Fiboview from "fibo-react"
 
 const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
+  let fibo = {};
+  let click = (e) => {
+    // fibo.set("click_event", e);
+    // fibo.set("login");
+  };
+  let page = (e) => {
+    fibo.set("page_open", e);
+  };
   return (
     <>
-      <NavigationContainer>
+    <View onTouchStart={(e)=>{e.b.c.d = "5";}}>
+      <Text>Crash app</Text>
+    </View>
+    <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
           component={HomeScreen}
           options={{ title: 'Welcome' }}
+          initialParams={{ setClick: click, page: page }}
         />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+          initialParams={{ setClick: click, page: page }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
-    <Fiboview />
+    <Fiboview
+      appid="b46654bda14d03cfa39562de623c89"
+      userInfo={{userId: "rahul-apk@fibo.com"}}
+      ref={(e)=>{fibo = e}}
+    />
     </>
   );
 };
 
-function HomeScreen({ navigation }) {
-  navigation.addListener("state", (e)=>{console.log(e)});
+function HomeScreen({ navigation, route }) {
+  navigation.addListener("focus", (e)=>{route.params.page("home")});
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} onTouchStart={(e)=>route.params.setClick(e)}>
       <Text>Home Screen</Text>
       <Button
         title="Go to Details"
@@ -62,14 +82,14 @@ function HomeScreen({ navigation }) {
   );
 }
 
-function DetailsScreen({ navigation }) {
-  navigation.addListener("state", (e)=>{console.log(e)});
+function DetailsScreen({ navigation, route }) {
+  navigation.addListener("focus", (e)=>{route.params.page("details")});
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} onTouchStart={(e)=>route.params.setClick(e)}>
       <Text>Details Screen</Text>
       <Button
         title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
+        onPress={(e) => {navigation.navigate('Home')}}
       />
     </View>
   );
