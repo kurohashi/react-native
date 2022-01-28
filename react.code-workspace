@@ -2,12 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../npm_packages/fibo-react"
-		},
-		{
-			"path": "../fibotalk/widget-fe"
 		}
 	],
 	"settings": {}
